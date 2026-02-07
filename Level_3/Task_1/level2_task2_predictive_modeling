@@ -1,0 +1,195 @@
+# LEVEL 3 – TASK 1: PREDICTIVE MODELING (CLASSIFICATION)
+import pandas as pd
+import matplotlib.pyplot as plt
+from pathlib import Path
+
+# Scikit-learn utilities
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    classification_report,
+    confusion_matrix
+)
+
+# Classification models
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+
+print("\n" + "=" * 60)
+print("LEVEL 3 – TASK 1: PREDICTIVE MODELING (CLASSIFICATION)")
+print("=" * 60)
+
+# LOAD DATASET
+
+# Base directory (this script location)
+BASE_DIR = Path(__file__).resolve().parent
+
+# Path to cleaned churn dataset from Level 1
+DATA_PATH = (
+    BASE_DIR.parent.parent
+    / "Level_1"
+    / "Task_1"
+    / "churn_bigml_80_cleaned.csv"
+)
+print("\nLoading dataset from:")
+print(DATA_PATH)
+
+# Load dataset
+df = pd.read_csv(DATA_PATH)
+print("\nDataset loaded successfully!")
+print("Dataset shape:", df.shape)
+print("\nColumns:")
+print(df.columns.tolist())
+print("\nFirst 5 rows:")
+print(df.head())
+
+
+# DATA PREPROCESSING
+print("\n" + "=" * 60)
+print("STEP 2: DATA PREPROCESSING")
+print("=" * 60)
+
+# Target variable
+y = df["churn"]
+
+# Feature matrix
+X = df.drop("churn", axis=1)
+
+# Identify categorical and numerical columns
+categorical_cols = X.select_dtypes(include=["object"]).columns
+numerical_cols = X.select_dtypes(exclude=["object"]).columns
+print("\nCategorical columns:")
+print(categorical_cols.tolist())
+print("\nNumerical columns:")
+print(numerical_cols.tolist())
+
+# One-hot encode categorical variables
+X_encoded = pd.get_dummies(X, columns=categorical_cols, drop_first=True)
+print("\nFeature matrix after encoding shape:", X_encoded.shape)
+
+# Train-test split
+X_train, X_test, y_train, y_test = train_test_split(
+    X_encoded,
+    y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y
+)
+print("\nTrain-test split completed:")
+print("Training set:", X_train.shape)
+print("Testing set:", X_test.shape)
+
+# Feature scaling
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+print("\nFeature scaling completed successfully!")
+
+# MODEL TRAINING & EVALUATION
+print("\n" + "=" * 60)
+print("STEP 3: MODEL TRAINING & EVALUATION")
+print("=" * 60)
+
+# Logistic Regression 
+print("\nTraining Logistic Regression model...")
+log_reg = LogisticRegression(max_iter=1000, random_state=42)
+log_reg.fit(X_train_scaled, y_train)
+
+# Predictions
+y_pred_lr = log_reg.predict(X_test_scaled)
+
+# Evaluation
+print("\nLogistic Regression Results:")
+print("Accuracy:", accuracy_score(y_test, y_pred_lr))
+print("Precision:", precision_score(y_test, y_pred_lr))
+print("Recall:", recall_score(y_test, y_pred_lr))
+print("F1-score:", f1_score(y_test, y_pred_lr))
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred_lr))
+
+# Decision Tree 
+print("\nTraining Decision Tree model...")
+dt_model = DecisionTreeClassifier(
+    random_state=42,
+    max_depth=10,
+    min_samples_split=20
+)
+dt_model.fit(X_train_scaled, y_train)
+
+# Predictions
+y_pred_dt = dt_model.predict(X_test_scaled)
+
+# Evaluation
+print("\nDecision Tree Results:")
+print("Accuracy:", accuracy_score(y_test, y_pred_dt))
+print("Precision:", precision_score(y_test, y_pred_dt))
+print("Recall:", recall_score(y_test, y_pred_dt))
+print("F1-score:", f1_score(y_test, y_pred_dt))
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred_dt))
+
+# -------- Random Forest --------
+print("\nTraining Random Forest model...")
+rf_model = RandomForestClassifier(
+    n_estimators=200,
+    max_depth=12,
+    min_samples_split=10,
+    random_state=42,
+    n_jobs=-1
+)
+rf_model.fit(X_train_scaled, y_train)
+
+# Predictions
+y_pred_rf = rf_model.predict(X_test_scaled)
+
+# Evaluation
+print("\nRandom Forest Results:")
+print("Accuracy:", accuracy_score(y_test, y_pred_rf))
+print("Precision:", precision_score(y_test, y_pred_rf))
+print("Recall:", recall_score(y_test, y_pred_rf))
+print("F1-score:", f1_score(y_test, y_pred_rf))
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred_rf))
+
+print("\n" + "=" * 60)
+print("STEP 4: HYPERPARAMETER TUNING (GRID SEARCH)")
+print("=" * 60)
+
+param_grid = {
+    "n_estimators": [100, 200],
+    "max_depth": [None, 10, 20],
+    "min_samples_split": [2, 10],
+    "min_samples_leaf": [1, 5]
+}
+
+grid_search = GridSearchCV(
+    RandomForestClassifier(random_state=42),
+    param_grid,
+    cv=5,
+    scoring="f1",
+    n_jobs=-1
+)
+
+grid_search.fit(X_train_scaled, y_train)
+
+best_rf = grid_search.best_estimator_
+
+print("\nBest Parameters:")
+print(grid_search.best_params_)
+
+# Evaluate tuned model
+y_pred_best = best_rf.predict(X_test_scaled)
+
+print("\nTuned Random Forest Results:")
+print("Accuracy:", accuracy_score(y_test, y_pred_best))
+print("Precision:", precision_score(y_test, y_pred_best))
+print("Recall:", recall_score(y_test, y_pred_best))
+print("F1-score:", f1_score(y_test, y_pred_best))
+
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred_best))

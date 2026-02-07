@@ -1,0 +1,133 @@
+# level3_task3_sentiment_analysis.py
+# ====================================
+# LEVEL 3 – TASK 3: NLP SENTIMENT ANALYSIS
+# ====================================
+
+import pandas as pd
+import matplotlib.pyplot as plt
+from pathlib import Path
+from textblob import TextBlob
+from textblob import Word
+from wordcloud import WordCloud
+import os
+
+print("\n" + "="*60)
+print("LEVEL 3 – TASK 3: SENTIMENT ANALYSIS")
+print("="*60)
+
+# --------------------------------------------------
+# STEP 0: SETUP PATHS
+# --------------------------------------------------
+BASE_DIR = Path(__file__).resolve().parent
+DATA_PATH = BASE_DIR.parent.parent / "Level_1" / "Task_1" / "sentiment_cleaned.csv"
+
+OUTPUT_PLOTS = BASE_DIR / "outputs" / "plots"
+OUTPUT_WC = BASE_DIR / "outputs" / "wordclouds"
+
+# Create directories if they don't exist
+OUTPUT_PLOTS.mkdir(parents=True, exist_ok=True)
+OUTPUT_WC.mkdir(parents=True, exist_ok=True)
+
+# --------------------------------------------------
+# STEP 1: LOAD DATASET
+# --------------------------------------------------
+print("Loading dataset from:")
+print(DATA_PATH)
+
+df = pd.read_csv(DATA_PATH)
+print("\nDataset loaded:", df.shape)
+print(df.head())
+
+# Confirm the text column
+TEXT_COL = "Text"  # replace if different
+print("\nUsing text column:", TEXT_COL)
+
+# --------------------------------------------------
+# STEP 2: TEXT PREPROCESSING (OFFLINE, NLTK INDEPENDENT)
+# --------------------------------------------------
+# Simple English stopwords list
+stop_words = set([
+    "i","me","my","myself","we","our","ours","ourselves","you","your","yours",
+    "yourself","yourselves","he","him","his","himself","she","her","hers","herself",
+    "it","its","itself","they","them","their","theirs","themselves","what","which",
+    "who","whom","this","that","these","those","am","is","are","was","were","be",
+    "been","being","have","has","had","having","do","does","did","doing","a","an",
+    "the","and","but","if","or","because","as","until","while","of","at","by","for",
+    "with","about","against","between","into","through","during","before","after",
+    "above","below","to","from","up","down","in","out","on","off","over","under",
+    "again","further","then","once","here","there","when","where","why","how","all",
+    "any","both","each","few","more","most","other","some","such","no","nor","not",
+    "only","own","same","so","than","too","very","s","t","can","will","just","don",
+    "should","now"
+])
+
+def clean_text(text):
+    """Lowercase, remove stopwords, lemmatize words"""
+    text = str(text).lower()
+    words = [Word(w).lemmatize() for w in text.split() if w.isalpha() and w not in stop_words]
+    return " ".join(words)
+
+df["clean_text"] = df[TEXT_COL].apply(clean_text)
+print("\nText preprocessing completed.")
+
+# --------------------------------------------------
+# STEP 3: SENTIMENT SCORING
+# --------------------------------------------------
+def get_sentiment(text):
+    """Return polarity score (-1 to 1)"""
+    return TextBlob(text).sentiment.polarity
+
+def classify_sentiment(polarity):
+    """Classify sentiment based on polarity"""
+    if polarity > 0.05:
+        return "Positive"
+    elif polarity < -0.05:
+        return "Negative"
+    else:
+        return "Neutral"
+
+# Apply sentiment scoring
+df["polarity"] = df["clean_text"].apply(get_sentiment)
+df["sentiment_class"] = df["polarity"].apply(classify_sentiment)
+
+print("\nSentiment scoring completed. Sample results:")
+print(df[[TEXT_COL, "clean_text", "polarity", "sentiment_class"]].head())
+
+# --------------------------------------------------
+# STEP 4: VISUALIZE SENTIMENT DISTRIBUTION
+# --------------------------------------------------
+plt.figure(figsize=(6,4))
+df["sentiment_class"].value_counts().plot(kind="bar", color=["green","red","gray"])
+plt.title("Sentiment Distribution")
+plt.xlabel("Sentiment")
+plt.ylabel("Count")
+plt.tight_layout()
+plt.savefig(OUTPUT_PLOTS / "sentiment_distribution.png")
+plt.show()
+print(f"\nSentiment distribution plot saved to {OUTPUT_PLOTS}")
+
+# --------------------------------------------------
+# STEP 5: GENERATE WORD CLOUDS
+# --------------------------------------------------
+def generate_wordcloud(text_series, output_file, title):
+    text_combined = " ".join(text_series)
+    wc = WordCloud(width=800, height=400, background_color="white").generate(text_combined)
+    plt.figure(figsize=(10,5))
+    plt.imshow(wc, interpolation="bilinear")
+    plt.axis("off")
+    plt.title(title)
+    plt.tight_layout()
+    plt.savefig(output_file)
+    plt.show()
+    print(f"{title} saved to {output_file}")
+
+# Word clouds by sentiment
+for sentiment in ["Positive","Neutral","Negative"]:
+    subset = df[df["sentiment_class"] == sentiment]
+    generate_wordcloud(
+        subset["clean_text"],
+        OUTPUT_WC / f"wordcloud_{sentiment.lower()}.png",
+        f"{sentiment} Word Cloud"
+    )
+
+print("\nAll tasks completed successfully.")
