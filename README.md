@@ -52,10 +52,11 @@ Codveda_Data_Analytics/
 ├─ Level_3/
 │   ├─ Task_1/  # Predictive modeling (classification)
 │   ├─ Task_2/  # Power BI dashboards
+│   │   └─ Screenshots/  # GIF and dashboard images
 │   └─ Task_3/  # NLP sentiment analysis and outputs
 │
-├─ *.csv        # Raw datasets used across tasks
-└─ README.md    # Project documentation
+├─ *.csv  # Raw datasets used across tasks
+└─ README.md  # Project documentation
 
 # Key Features & Highlights
 1. Data Cleaning & Preprocessing
@@ -76,12 +77,20 @@ Codveda_Data_Analytics/
 6. Natural Language Processing (NLP)
    a. Sentiment analysis on text datasets using TextBlob and nltk.
    b. Word clouds and distribution charts to visualize sentiment patterns.
-7. Interactive Dashboards
+7.Interactive Dashboards
    a. Dashboards built in Power BI for churn analytics and operational insights.
    b. KPIs, slicers, and drill-downs for effective data storytelling.
+   c. Dashboard demo:
 
-
+![Dashboard GIF](Level_3/Task_2/Screenshots/dashboard_demo.gif)
 
 Built interactive dashboards to communicate insights effectively.
 
 Applied NLP techniques to extract sentiment from textual datasets.
+
+
+
+
+
+
+
