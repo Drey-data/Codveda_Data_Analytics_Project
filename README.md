@@ -40,23 +40,24 @@ Other Tools:
 Codveda_Data_Analytics/
 │
 ├─ Level_1/
-│   ├─ Task_1/  # Data cleaning & cleaned datasets
-│   ├─ Task_2/  # Exploratory Data Analysis
-│   └─ Task_3/  # Visualizations & plots
+│   ├─ Task_1/       # Data cleaning & cleaned datasets
+│   ├─ Task_2/       # Exploratory Data Analysis
+│   └─ Task_3/       # Visualizations & plots
 │
 ├─ Level_2/
-│   ├─ Task_1/  # Regression analysis
-│   ├─ Task_2/  # Time series analysis
-│   └─ Task_3/  # Clustering (K-Means)
+│   ├─ Task_1/       # Regression analysis
+│   ├─ Task_2/       # Time series analysis
+│   └─ Task_3/       # Clustering (K-Means)
 │
 ├─ Level_3/
-│   ├─ Task_1/  # Predictive modeling (classification)
-│   ├─ Task_2/  # Power BI dashboards
+│   ├─ Task_1/       # Predictive modeling (classification)
+│   ├─ Task_2/       # Power BI dashboards
 │   │   └─ Screenshots/  # GIF and dashboard images
-│   └─ Task_3/  # NLP sentiment analysis and outputs
+│   └─ Task_3/       # NLP sentiment analysis and outputs
 │
-├─ *.csv  # Raw datasets used across tasks
-└─ README.md  # Project documentation
+├─ *.csv             # Raw datasets used across tasks
+├─ "Data Analytics Task List.pdf"  # Project task description PDF
+└─ README.md         # Project documentation
 
 # Key Features & Highlights
 1. Data Cleaning & Preprocessing
