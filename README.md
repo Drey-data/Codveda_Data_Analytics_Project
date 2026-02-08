@@ -21,6 +21,7 @@ The datasets include numerical, categorical, and text-based data, which required
 3. Churn Dataset – categorical and numeric data used for predictive modeling and KPI dashboards.
 4. Sentiment Dataset – text data used for NLP and sentiment classification.
 5. Iris Dataset – simple dataset used for demonstration of basic data cleaning and EDA tasks.
+
 All datasets have been cleaned and preprocessed, with final versions saved for analysis.
 
 # Tools & Technologies
