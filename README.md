@@ -40,8 +40,8 @@ Other Tools:
 Codveda_Data_Analytics/
 │
 ├─ Level_1/
-│   ├─ Task_1/  # Data cleaning & preprocessing
-│   ├─ Task_2/  # EDA
+│   ├─ Task_1/  # Data cleaning & cleaned datasets
+│   ├─ Task_2/  # Exploratory Data Analysis
 │   └─ Task_3/  # Visualizations & plots
 │
 ├─ Level_2/
@@ -51,15 +51,13 @@ Codveda_Data_Analytics/
 │
 ├─ Level_3/
 │   ├─ Task_1/  # Predictive modeling (classification)
-│   ├─ Task_2/  # Interactive dashboards (Power BI)
-│   └─ Task_3/  # NLP Sentiment Analysis
+│   ├─ Task_2/  # Power BI dashboards
+│   └─ Task_3/  # NLP sentiment analysis and outputs
 │
-├─ data/       # Raw datasets
-├─ outputs/    # Plots, wordclouds, and charts
-└─ README.md   # Project documentation
+├─ *.csv        # Raw datasets used across tasks
+└─ README.md    # Project documentation
 
 # Key Features & Highlights
-
 1. Data Cleaning & Preprocessing
    a. Handling missing values, duplicates, and inconsistent formats.
    b. Standardization of column names and date/time formatting.
